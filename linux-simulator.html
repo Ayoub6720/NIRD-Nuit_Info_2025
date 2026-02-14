@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NIRD – Simulateur d'Installation Linux</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles/styles_global.css">
+    <link rel="stylesheet" href="styles/linux-simulator.css">
+</head>
+
+<body>
+    <canvas id="particlesCanvas" aria-hidden="true"></canvas>
+    <div class="bg"></div>
+
+    <div class="page">
+        <!-- Header -->
+        <!-- Header -->
+        <header class="header">
+            <div class="header__brand">
+                <a href="index.html">
+                    <div class="brand-logo">
+                        <img src="assets/logo.jpg" alt="DoctorPC">
+                    </div>
+                </a>
+                <div class="brand-text">
+                    <span class="brand-title">DoctorPC</span>
+                </div>
+            </div>
+
+            <nav class="nav" id="navMenu">
+                <a href="index.html">Accueil</a>
+                <a href="repair-game.html">Jeu de réparation</a>
+                <a href="page-linux.html" class="is-active">Installation Linux</a>
+                <a href="ia.html" aria-label="Parler au ChatBot">Parler au ChatBot</a>
+                <a href="carte.html" aria-current="page">Carte compétences</a>
+                <a href="avis.html">Donner un avis</a>
+            </nav>
+
+
+            <button class="burger" id="burgerBtn" aria-label="Ouvrir le menu">
+                <span></span><span></span><span></span>
+            </button>
+        </header>
+
+
+        <main class="simulator-container">
+            <!-- Barre de progression globale -->
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-bar__fill" id="globalProgress"></div>
+                </div>
+                <div class="progress-steps">
+                    <div class="step active" data-step="1">Distribution</div>
+                    <div class="step" data-step="2">Vérification</div>
+                    <div class="step" data-step="3">Disque</div>
+                    <div class="step" data-step="4">Utilisateur</div>
+                    <div class="step" data-step="5">Installation</div>
+                    <div class="step" data-step="6">Démarrage</div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 1 : Choix de la distribution -->
+            <section class="simulator-step active" id="step1">
+                <h2 class="step-title">Choisissez votre distribution Linux 🐧</h2>
+                <p class="step-description">
+                    Chaque distribution est gratuite et open-source. Choisissez celle qui vous convient !
+                </p>
+
+                <div class="distros-grid">
+                    <div class="distro-card" data-distro="ubuntu">
+                        <div class="distro-icon">🟠</div>
+                        <h3>Ubuntu</h3>
+                        <p>La plus populaire et stable. Parfaite pour débuter.</p>
+                        <div class="distro-tags">
+                            <span class="tag">Stable</span>
+                            <span class="tag">Communauté</span>
+                        </div>
+                    </div>
+
+                    <div class="distro-card" data-distro="mint">
+                        <div class="distro-icon">🟢</div>
+                        <h3>Linux NIRD</h3>
+                        <p>Elle est créée, testée et maintenue par des enseignants et acteurs de l’éducation.</p>
+                        <p>Elle est légère (Linux Mint + Xfce + dock Plank). Ainsi elle pour tourner sur des machines
+                            même anciennes.</p>
+                        <div class="distro-tags">
+                            <span class="tag">Léger</span>
+                            <span class="tag">Recommandé</span>
+                        </div>
+                    </div>
+
+                    <div class="distro-card" data-distro="debian">
+                        <div class="distro-icon">🔴</div>
+                        <h3>Debian</h3>
+                        <p>Solide et fiable. La base de nombreuses distributions.</p>
+                        <div class="distro-tags">
+                            <span class="tag">Robuste</span>
+                            <span class="tag">Expert</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn--primary btn--large" id="continueStep1" style="display: none;">
+                    Continuer avec <span id="selectedDistroName"></span> →
+                </button>
+            </section>
+
+            <!-- ÉTAPE 2 : Vérification de la configuration -->
+            <section class="simulator-step" id="step2">
+                <h2 class="step-title">Vérification de la configuration ⚙️</h2>
+                <p class="step-description">
+                    Vérifions que votre ordinateur est compatible avec Linux
+                </p>
+
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="btn-close"></span>
+                            <span class="btn-minimize"></span>
+                            <span class="btn-maximize"></span>
+                        </div>
+                        <span class="terminal-title">Configuration Check</span>
+                    </div>
+                    <div class="terminal-body" id="terminalOutput">
+                        <div class="terminal-prompt">$</div>
+                    </div>
+                </div>
+
+                <button class="btn btn--primary btn--large" id="startCheck">
+                    🔍 Lancer la vérification
+                </button>
+                <button class="btn btn--primary btn--large" id="continueStep2" style="display: none;">
+                    Tout est compatible ! Continuer →
+                </button>
+            </section>
+
+            <!-- ÉTAPE 3 : Partitionnement du disque -->
+            <section class="simulator-step" id="step3">
+                <h2 class="step-title">Configuration du disque 💾</h2>
+                <p class="step-description">
+                    Comment souhaitez-vous installer Linux ?
+                </p>
+
+                <div class="disk-visualization">
+                    <div class="disk-bar" id="diskBar">
+                        <div class="disk-segment windows">
+                            <span>Windows (100 GB)</span>
+                        </div>
+                    </div>
+                    <div class="disk-legend">
+                        <div class="legend-item">
+                            <span class="color-box windows-color"></span>
+                            <span>Windows</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="color-box linux-color"></span>
+                            <span>Linux</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="partition-options">
+                    <div class="option-card" data-option="erase">
+                        <div class="option-icon">🗑️</div>
+                        <h3>Effacer et installer</h3>
+                        <p>Supprimer Windows et utiliser tout le disque pour Linux</p>
+                        <span class="recommended-badge">Recommandé pour vieux PC</span>
+                    </div>
+
+                    <div class="option-card" data-option="alongside">
+                        <div class="option-icon">🔀</div>
+                        <h3>Installer à côté</h3>
+                        <p>Garder Windows et créer une partition pour Linux (dual boot)</p>
+                        <span class="recommended-badge">Garde Windows</span>
+                    </div>
+                </div>
+
+                <button class="btn btn--primary btn--large" id="continueStep3" style="display: none;">
+                    Valider le partitionnement →
+                </button>
+            </section>
+
+            <!-- ÉTAPE 4 : Création du compte utilisateur -->
+            <section class="simulator-step" id="step4">
+                <h2 class="step-title">Créez votre compte 👤</h2>
+                <p class="step-description">
+                    Configurez votre identité sur votre nouveau système Linux
+                </p>
+
+                <div class="user-creation">
+                    <div class="avatar-container">
+                        <div class="linux-avatar" id="linuxAvatar">
+                            <div class="penguin">🐧</div>
+                        </div>
+                    </div>
+
+                    <form class="user-form" id="userForm">
+                        <div class="form-group">
+                            <label for="username">Nom d'utilisateur</label>
+                            <input type="text" id="username" placeholder="ex: jean" required>
+                            <span class="form-hint">Lettres minuscules et chiffres uniquement</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Mot de passe</label>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="strength-bar"></div>
+                                <span class="strength-text">Force : Faible</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hostname">Nom de l'ordinateur (optionnel)</label>
+                            <input type="text" id="hostname" placeholder="ex: mon-pc-linux">
+                            <span class="form-hint">Ce nom sera visible sur votre réseau</span>
+                        </div>
+                    </form>
+                </div>
+
+                <button class="btn btn--primary btn--large" id="continueStep4" disabled>
+                    Créer le compte →
+                </button>
+            </section>
+
+            <!-- ÉTAPE 5 : Installation -->
+            <section class="simulator-step" id="step5">
+                <h2 class="step-title">Installation en cours... ⏳</h2>
+                <p class="step-description">
+                    Linux s'installe sur votre ordinateur. Cela peut prendre quelques minutes.
+                </p>
+
+                <div class="installation-container">
+                    <div class="install-progress">
+                        <div class="install-bar">
+                            <div class="install-bar__fill" id="installProgress"></div>
+                        </div>
+                        <div class="install-percentage" id="installPercentage">0%</div>
+                    </div>
+
+                    <div class="install-messages" id="installMessages">
+                        <div class="install-message">Préparation de l'installation...</div>
+                    </div>
+
+                    <div class="install-spinner">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ÉTAPE 6 : Premier démarrage -->
+            <section class="simulator-step" id="step6">
+                <!-- Boot screen -->
+                <div class="boot-screen" id="bootScreen">
+                    <div class="boot-logo" id="bootLogo">
+                        <div class="logo-circle">🐧</div>
+                        <div class="boot-text">Booting Linux...</div>
+                    </div>
+                </div>
+
+                <!-- Desktop final -->
+                <div class="linux-desktop" id="linuxDesktop" style="display: none;">
+                    <div class="desktop-wallpaper">
+
+                        <!-- Icônes du bureau (grille centrée) -->
+                        <div class="desktop-icons-grid">
+                            <div class="desktop-icon" data-window="terminal">
+                                <div class="icon">💻</div>
+                                <span>Terminal</span>
+                            </div>
+                            <div class="desktop-icon" data-window="files">
+                                <div class="icon">📁</div>
+                                <span>Fichiers</span>
+                            </div>
+                            <div class="desktop-icon" data-window="browser">
+                                <div class="icon">🌐</div>
+                                <span>Navigateur</span>
+                            </div>
+                            <div class="desktop-icon" data-window="settings">
+                                <div class="icon">🛠️</div>
+                                <span>Paramètres</span>
+                            </div>
+                            <div class="desktop-icon desktop-icon--exit" data-action="exit" onclick="window.location.href='index.html'" title="Retour à l'accueil du site">
+                                <div class="icon">🚪</div>
+                                <span>Quitter</span>
+                            </div>
+                        </div>
+
+                        <!-- Message de félicitations (disparaît après interaction) -->
+                        <div class="welcome-message" id="welcomeMessage">
+                            <h2>🎉 Félicitations !</h2>
+                            <p>Vous avez terminé l'installation de Linux !</p>
+                            <p class="message-highlight">
+                                Explorez maintenant votre nouveau système : ouvrez le
+                                <strong>Terminal</strong> pour taper des commandes,
+                                parcourez vos <strong>Fichiers</strong>, ou naviguez sur le web !
+                            </p>
+                            <div class="final-actions">
+                                <button class="btn btn--primary" id="startExploring">
+                                    🖥️ Explorer le bureau
+                                </button>
+                                <button class="btn btn--ghost" onclick="window.location.href='index.html'">
+                                    Retour à l'accueil
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Container pour les fenêtres -->
+                        <div class="windows-container" id="windowsContainer">
+
+                            <!-- Fenêtre Terminal -->
+                            <div class="os-window terminal-window" id="window-terminal" data-window="terminal">
+                                <div class="window-header terminal-header-dark">
+                                    <div class="window-title">
+                                        <span class="window-icon">💻</span>
+                                        <span>Terminal</span>
+                                    </div>
+                                    <button class="window-close" data-close="terminal">✕</button>
+                                </div>
+                                <div class="window-content terminal-content" id="terminalWindow">
+                                    <div class="terminal-output" id="terminalOutputDesktop">
+                                        <div class="terminal-welcome">
+                                            Bienvenue dans le Terminal Linux ! 🐧
+                                            Tapez "help" pour voir les commandes disponibles.
+                                        </div>
+                                    </div>
+                                    <div class="terminal-input-line">
+                                        <span class="terminal-prompt-text"
+                                            id="terminalPrompt">utilisateur@linux-sim:~$</span>
+                                        <input type="text" id="terminalInput" class="terminal-input" autocomplete="off"
+                                            spellcheck="false">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fenêtre Paramètres -->
+                            <div class="os-window" id="window-settings" data-window="settings">
+                                <div class="window-header">
+                                    <div class="window-title">
+                                        <span class="window-icon">🛠️</span>
+                                        <span>Paramètres</span>
+                                    </div>
+                                    <button class="window-close" data-close="settings">✕</button>
+                                </div>
+                                <div class="window-content">
+                                    <div class="settings-section">
+                                        <h3>🎨 Apparence</h3>
+                                        <div class="setting-item">
+                                            <span>Thème</span>
+                                            <div class="theme-toggle" id="themeToggle">
+                                                <span class="theme-option active" data-theme="dark">🌙 Sombre</span>
+                                                <span class="theme-option" data-theme="light">☀️ Clair</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="settings-section">
+                                        <h3>💻 Système</h3>
+                                        <div class="system-info">
+                                            <div class="info-row">
+                                                <span>OS</span>
+                                                <span id="osName">Linux Ubuntu 24.04</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span>Noyau</span>
+                                                <span>6.5.0-generic</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span>Mémoire</span>
+                                                <span>8 GB DDR4</span>
+                                            </div>
+                                            <div class="info-row">
+                                                <span>Processeur</span>
+                                                <span>Intel Core i5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="settings-section">
+                                        <h3>📶 Réseau</h3>
+                                        <div class="network-status">
+                                            <div class="status-indicator connected"></div>
+                                            <span>Connecté à "WiFi_Maison"</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fenêtre Navigateur -->
+                            <div class="os-window" id="window-browser" data-window="browser">
+                                <div class="window-header">
+                                    <div class="window-title">
+                                        <span class="window-icon">🌐</span>
+                                        <span>Navigateur</span>
+                                    </div>
+                                    <button class="window-close" data-close="browser">✕</button>
+                                </div>
+                                <div class="window-content browser-content">
+                                    <div class="browser-toolbar">
+                                        <div class="browser-nav">
+                                            <button class="nav-btn">←</button>
+                                            <button class="nav-btn">→</button>
+                                            <button class="nav-btn">🔄</button>
+                                        </div>
+                                        <div class="browser-url">
+                                            <span>🔒</span>
+                                            <input type="text" value="https://bienvenue-linux.local" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="browser-page">
+                                        <div class="fake-webpage">
+                                            <h1>🐧 Bienvenue sur Linux !</h1>
+                                            <p>Vous naviguez maintenant avec un navigateur libre et open-source.</p>
+                                            <div class="webpage-features">
+                                                <div class="feature">🔒 Vie privée respectée</div>
+                                                <div class="feature">⚡ Navigation rapide</div>
+                                                <div class="feature">🌍 Web ouvert</div>
+                                            </div>
+                                            <p class="explore-text">Explorez librement le web sans trackers ! 🎉</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fenêtre Fichiers -->
+                            <div class="os-window" id="window-files" data-window="files">
+                                <div class="window-header">
+                                    <div class="window-title">
+                                        <span class="window-icon">📁</span>
+                                        <span>Fichiers</span>
+                                    </div>
+                                    <button class="window-close" data-close="files">✕</button>
+                                </div>
+                                <div class="window-content files-content">
+                                    <div class="files-sidebar">
+                                        <div class="sidebar-item" data-path="/home/utilisateur">
+                                            <span>🏠</span> Accueil
+                                        </div>
+                                        <div class="sidebar-item" data-path="/home/utilisateur/Documents">
+                                            <span>📄</span> Documents
+                                        </div>
+                                        <div class="sidebar-item" data-path="/home/utilisateur/Images">
+                                            <span>🖼️</span> Images
+                                        </div>
+                                        <div class="sidebar-item" data-path="/home/utilisateur/Téléchargements">
+                                            <span>⬇️</span> Téléchargements
+                                        </div>
+                                        <div class="sidebar-item" data-path="/home/utilisateur/Musique">
+                                            <span>🎵</span> Musique
+                                        </div>
+                                        <div class="sidebar-item" data-path="/home/utilisateur/Jeux">
+                                            <span>🎮</span> Jeux
+                                        </div>
+                                        <div class="sidebar-item" data-path="/">
+                                            <span>💻</span> Système
+                                        </div>
+                                    </div>
+                                    <div class="files-main">
+                                        <div class="files-toolbar">
+                                            <button class="files-nav-btn" id="filesBack" title="Retour">←</button>
+                                            <button class="files-nav-btn" id="filesHome" title="Accueil">🏠</button>
+                                            <div class="files-path" id="filesPathBar">
+                                                <span>🏠</span> / home / <span id="filesUsername">utilisateur</span>
+                                            </div>
+                                        </div>
+                                        <div class="files-grid" id="filesGrid">
+                                            <!-- Contenu dynamique -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fenêtre Éditeur de Texte -->
+                            <div class="os-window editor-window" id="window-editor" data-window="editor">
+                                <div class="window-header editor-header">
+                                    <div class="window-title">
+                                        <span class="window-icon">📝</span>
+                                        <span id="editorFileName">Éditeur</span>
+                                    </div>
+                                    <button class="window-close" data-close="editor">✕</button>
+                                </div>
+                                <div class="window-content editor-content">
+                                    <textarea id="editorTextarea" placeholder="Commencez à écrire..."
+                                        spellcheck="false"></textarea>
+                                    <div class="editor-footer">
+                                        <div class="editor-info">
+                                            <span id="editorLineCount">Lignes: 0</span>
+                                            <span id="editorCharCount">Caractères: 0</span>
+                                        </div>
+                                        <div class="editor-actions">
+                                            <button class="btn btn--ghost btn--sm" id="editorCancel">Annuler</button>
+                                            <button class="btn btn--primary btn--sm" id="editorSave">💾
+                                                Enregistrer</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fenêtre Jeu Mario -->
+                            <div class="os-window mario-window" id="window-mario" data-window="mario">
+                                <div class="window-header mario-header">
+                                    <div class="window-title">
+                                        <span class="window-icon">🍄</span>
+                                        <span>Super Linux Bros</span>
+                                    </div>
+                                    <button class="window-close" data-close="mario">✕</button>
+                                </div>
+                                <div class="window-content mario-content">
+                                    <canvas id="marioCanvas" width="640" height="400"></canvas>
+                                    <div class="mario-overlay" id="marioOverlay">
+                                        <div class="mario-title">🍄 Super Linux Bros 🐧</div>
+                                        <div class="mario-instructions">
+                                            <p>← → pour se déplacer</p>
+                                            <p>ESPACE pour sauter</p>
+                                        </div>
+                                        <button class="btn btn--primary mario-start-btn" id="marioStartBtn">
+                                            🎮 Jouer
+                                        </button>
+                                    </div>
+                                    <div class="mario-win-screen" id="marioWinScreen">
+                                        <div class="mario-win-title">🎉 Bravo !</div>
+                                        <p>Vous avez terminé ce niveau !</p>
+                                        <div class="mario-win-stats">
+                                            <span id="marioTime">Temps: 00:00</span>
+                                        </div>
+                                        <button class="btn btn--primary" id="marioRestartBtn">🔄 Rejouer</button>
+                                        <button class="btn btn--ghost" id="marioCloseBtn">Fermer</button>
+                                    </div>
+                                    <div class="mario-hud" id="marioHUD">
+                                        <span class="mario-score">🪙 <span id="marioCoins">0</span></span>
+                                        <span class="mario-lives">❤️ <span id="marioLives">3</span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Taskbar -->
+                    <div class="taskbar">
+                        <div class="taskbar-left">
+                            <div class="app-launcher">
+                                <span>🐧</span>
+                                <span>Applications</span>
+                            </div>
+                        </div>
+                        <div class="taskbar-center">
+                            <div class="taskbar-apps" id="taskbarApps">
+                                <!-- Icônes des fenêtres ouvertes apparaissent ici -->
+                            </div>
+                        </div>
+                        <div class="taskbar-right">
+                            <div class="system-tray">
+                                <span>🔊</span>
+                                <span>📶</span>
+                                <span>🔋</span>
+                                <span class="time" id="desktopTime">14:32</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <footer class="footer">
+        <div class="footer__main">
+            <div class="footer__brand">
+                <div class="footer__brand-header">
+                    <div class="footer__logo">
+                        <img src="assets/logo.jpg" alt="DoctorPC">
+                    </div>
+                    <span class="footer__brand-name">DoctorPC</span>
+                </div>
+                <p class="footer__brand-desc">
+                    Numérique Inclusif, Responsable et Durable. Un projet éducatif pour
+                    sensibiliser aux enjeux du numérique sobre et du réemploi informatique.
+                </p>
+                <div class="footer__social">
+                    <a href="https://github.com/Lakhdaria/NIRD" target="_blank" class="footer__social-link"
+                        title="GitHub">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer__column">
+                <h4>Navigation</h4>
+                <ul class="footer__links">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="repair-game.html">Jeu de réparation</a></li>
+                    <li><a href="page-linux.html">Installation Linux</a></li>
+                    <li><a href="carte.html">Carte compétences</a></li>
+                    <li><a href="avis.html">Donner un avis</a></li>
+                </ul>
+            </div>
+
+            <div class="footer__column">
+                <h4>Ressources</h4>
+                <ul class="footer__links">
+                    <li><a href="https://github.com/Lakhdaria/NIRD" target="_blank">Code source</a></li>
+                    <li><a href="mentions-legales.html">Mentions légales</a></li>
+                    <li><a href="mentions-legales.html#credits">Crédits</a></li>
+                    <li><a href="mentions-legales.html#technologies">Technologies</a></li>
+                </ul>
+            </div>
+
+
+        </div>
+
+        <div class="footer__bottom">
+            <p class="footer__copyright">
+                © 2025 <a href="https://github.com/Lakhdaria/NIRD" target="_blank">Projet NIRD</a> ·
+                Nuit de l'Info 2025 · Vers un numérique plus libre et plus sobre.
+            </p>
+            <div class="footer__legal">
+                <a href="mentions-legales.html">Mentions légales</a>
+                <a href="mentions-legales.html#credits">Crédits</a>
+                <a href="https://github.com/Lakhdaria/NIRD" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+    <script src="scripts/linux-simulator.js"></script>
+</body>
+
+</html>
